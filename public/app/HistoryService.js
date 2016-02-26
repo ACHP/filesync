@@ -8,7 +8,6 @@ angular.module('FileSync')
 
       listModifiedFiles[filename] = {"filename":filename,"content": content};
 
-
       edits.unshift({
         filename: filename,
         timestamp: timestamp,

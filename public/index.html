@@ -12,35 +12,41 @@
 
 <body>
   <div ng-controller="SocialCtrl as social" class="users-bar">
+  <span id="fileSyncTitle">FileSync</span>
       <div style="background-color: {{viewer.color}}"class="user" ng-repeat="viewer in social.viewers" title="{{viewer.nickname}}"class="animate">
         {{viewer.nickname | limitTo:1}}
       </div>
   </div>
 
   <div ng-controller="HistoryCtrl as history">
-
-
   <div id="wrapper">
+
+
 
     <div id="sidebar-wrapper">
 <div  class="arbo" style="color:white">
+  <select ng-if="!history.listIsEmpty" ng-options="version as version.time | date: 'medium' for version in history.versionList track by version.time" ng-model="history.fileSelected">
+   <option value="" disabled>Choose filter</option>
+  </select>
   <ul>
     <li ng-repeat="file in history.listModifiedFiles">
 <p ng-click="history.showFile(file)">{{ file.filename }}</p>
 
   </li>
 </ul>
+
 </div>
-      <div class="chatContainer" ng-controller="SocialCtrl as sc">
+      <div class="chatContainer" ng-controller="MessageCtrl as mc">
         <div class="messageContainer">
 
-          <div class="message" ng-repeat="msg in sc.listMessages track by $index">
+          <div class="message" ng-repeat="msg in mc.listMessages track by $index">
+
             {{msg.viewer.nickname}} : </br>
             <div style="position:relative">
               <div class="messageContentBackground">
 
               </div>
-              <div ng-repeat="userMsg in msg.message">
+              <div ng-repeat="userMsg in msg.message track by $index">
                 <div class="userColor" style="background-color: {{ msg.viewer.color}};"></div>{{userMsg}}</br>
               </div>
             </div>
@@ -50,8 +56,8 @@
 
         </div>
         <div class="inputMessage">
-          <form ng-submit="sc.sendMessage()">
-            <input class="chatInput" ng-model="sc.message" placeholder="Partagez vos idées ..."></input>
+          <form ng-submit="mc.sendMessage()">
+            <input class="chatInput" ng-model="mc.message" placeholder="Partagez vos idées ..."></input>
 
           </form>
         </div>
@@ -76,7 +82,8 @@
                   <div class="row-fluid">
                     <div >
 
-                    <div class="animate" ng-if="history.listModifiedFiles.length !== 0">
+
+                    <div class="animate" ng-if="!history.listIsEmpty">
 
                       <div class="line well ng-cloak" id="{{history.fileSelected.filename}}" style="display:block">
                         <div class="row">
@@ -122,9 +129,12 @@
                       </div><!-- /line -->
 
                     </div>
-                    <div class="col-xs-12 alert alert-info"
-                    ng-if="history.fileSelected.length === 0"
-                    class="animate">
+
+                    <div class="central-info"  ng-if="history.listIsEmpty">
+                    ... aucun historique... mais que fait le prof !
+                  </div>
+
+                    <div class="col-xs-12 alert alert-info"  ng-if="history.listIsEmpty" class="animate" style="display:none;">
                     ... aucun historique... mais que fait le prof !
                   </div>
 
@@ -136,7 +146,13 @@
       </div>
     </div>
   </div>
+
+
+
+
+
 </div>
+
 
 
 
@@ -169,6 +185,10 @@
 <script src="/app/SocketIOService.js" type="text/javascript"></script>
 <script src="/app/SocialCtrl.js" type="text/javascript"></script>
 <script src="/app/VisibilityService.js" type="text/javascript"></script>
+
+<script src="/app/MessageCtrl.js" type="text/javascript"></script>
+<script src="/app/MessageService.js" type="text/javascript"></script>
+
 
 </body>
 </html>

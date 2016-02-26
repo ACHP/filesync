@@ -34,7 +34,14 @@ angular.module('FileSync')
     });
 
     return {
-
+      askForHistory : function(name){
+        console.log("socketIoService askforHistory");
+        socket.emit('file:readHistory', name);
+      }
+      ,
+      newHistory : function(f){
+        socket.on("file:newHistory",f)
+      },
       sendComment: function(edit, newComment){
         console.log("socketIoService sendComment");
         socket.emit('comment:newComment', {edit, newComment});
@@ -47,7 +54,9 @@ angular.module('FileSync')
         socket.on('comments:updated', f);
       },
 
+
       onMessage: function(f){
+        console.log("new Message !!!")
         socket.on('messages:updated', f);
       },
 

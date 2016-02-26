@@ -5,6 +5,14 @@ var express = require('express');
 var path = require('path');
 var app = express();
 var _ = require('lodash');
+var mkdirp = require('mkdirp');
+var database = require('./history');
+
+
+
+
+
+
 
 var logger = require('winston');
 var config = require('./config')(logger);
@@ -123,7 +131,20 @@ sio.on('connection', function(socket) {
     messages.add({id:socket.userId ,viewer:socket.viewer, message:[message]});
   })
 
+
+  socket.on('file:readHistory', function(fileName){
+
+    database.readFile(fileName, function(data){
+      console.log(data);
+      socket.emit('file:newHistory', data);
+
+    })
+  })
+
   socket.on('file:changed', function() {
+
+    database.createInsert(arguments);
+
     if (!socket.conn.request.isAdmin) {
       // if the user is not admin
       // skip this
